@@ -1,3 +1,9 @@
+# 실험을 위한 argument
+실험을 위해서 아래 argument 추가해서 main_nchain 실행 (ucb 1일 경우 mean+std로 action 결정)
+``` --agent BootstrappedDQN --cuda 0 --input-dim 100 --double-q 0 --ucb 0 --seed 2 ```
+
+
+
 # Randomized Value functions via Multiplicative Normalizing Flows
 This repo contains code for the paper 
 

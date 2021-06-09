@@ -43,6 +43,9 @@ class BootstrappedAgent():
         self.FloatTensor = torch.cuda.FloatTensor if args.cuda else torch.FloatTensor
         self.LongTensor = torch.cuda.LongTensor if args.cuda else torch.LongTensor
         self.ByteTensor = torch.cuda.ByteTensor if args.cuda else torch.ByteTensor
+        self.left_vals = []
+        self.right_vals = []
+        self.ucb = args.ucb
 
     # Acts based on single state (no batch)
     def act_single_head(self, state, k):
@@ -54,11 +57,40 @@ class BootstrappedAgent():
         self.online_net.eval()
         state = Variable(self.FloatTensor(state / 255.0))
         outputs = self.online_net.forward(state)
-        actions = []
-        for k in range(self.online_net.nheads):
-            actions.append(int(outputs[k].data.max(1)[1][0]))
-        action, _ = Counter(actions).most_common()[0]
-        return action
+
+        # for evaluating uncertainty
+        self.left_vals.append(list(map(lambda x: x.data[0][0].numpy(), outputs)))
+        self.right_vals.append(list(map(lambda x: x.data[0][1].numpy(), outputs)))
+
+
+        if self.ucb:
+            left_UCB = np.mean(self.left_vals[-1]) + np.std(self.right_vals[-1])
+            right_UCB = np.mean(self.right_vals[-1]) + np.std(self.right_vals[-1])
+            # print(left_UCB, right_UCB)
+            if left_UCB > right_UCB:
+                return 0
+            else:
+                return 1
+
+
+        # logging
+        # left_vals = list(map(lambda x: float(x.data[0][0].numpy()), outputs))
+        # np.set_printoptions(precision=2)
+        # # print("left q vals: ", np.array(left_vals))
+        # # print("left mean/std", np.mean(left_vals), np.std(left_vals))
+        # right_vals = list(map(lambda x: float(x.data[0][1].numpy()), outputs))
+        # if np.mean(right_vals) < 1:
+        #     print("right q vals: ", np.array(right_vals))
+        #     print("right mean/std", np.mean(right_vals), np.std(right_vals))
+        #     print("\n")
+
+
+        else:
+            actions = []
+            for k in range(self.online_net.nheads):
+                actions.append(int(outputs[k].data.max(1)[1][0]))
+            action, _ = Counter(actions).most_common()[0]
+            return action
 
     # Acts with an epsilon-greedy policy
     def act_e_greedy(self, state, k, epsilon=0.01):

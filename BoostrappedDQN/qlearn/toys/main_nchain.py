@@ -27,7 +27,7 @@ from qlearn.toys.mnf_agent import MNFAgent
 from qlearn.envs.nchain import NChainEnv
 # from qlearn.toys.memory import ReplayBuffer
 from qlearn.toys.test import test
-
+import matplotlib.pyplot as plt
 
 parser = argparse.ArgumentParser(description='DQN')
 parser.add_argument('--seed', type=int, default=510, help='Random seed')
@@ -57,6 +57,8 @@ parser.add_argument('--n-flows-q', type=int, default=int(1), help='number of nor
 parser.add_argument('--n-flows-r', type=int, default=int(1), help='number of normalizing flows using for auxiliary posterior r')
 parser.add_argument('--logdir', type=str, default='logs', help='log directory')
 parser.add_argument('--double-q', type=int, default=1, help='whether or not to use Double DQN')
+parser.add_argument('--ucb', type=int, default=0, help='whether or not to use UCB')
+
 
 # Setup
 args = parser.parse_args()
@@ -104,6 +106,8 @@ exploration = LinearSchedule(args.final_exploration_step, args.final_exploration
 # import pdb
 # pdb.set_trace()
 
+
+graph_rewards = []
 # Training loop
 dqn.online_net.train()
 timestamp = 0
@@ -151,6 +155,14 @@ for episode in range(args.max_episodes):
     #         visited.append(transition.state.sum())
     #     print(Counter(visited))
 
+
+    avg_reward = test(args, env, dqn, episode)  # Test
+    graph_rewards.append(avg_reward)
+
     if episode > 4:
-        avg_reward = test(args, env, dqn)  # Test
         print('episode: ' + str(episode) + ', Avg. reward: ' + str(round(avg_reward, 4)))
+
+plt.plot(graph_rewards, 'bo')
+plt.ylabel('avg. rewards')
+plt.xlabel('episodes')
+plt.savefig(f'avg_{args.agent}')
