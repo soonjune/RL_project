@@ -146,7 +146,10 @@ for episode in range(args.max_episodes):
 
     if timestamp > args.learning_starts:
         obses_t, actions, rewards, obses_tp1, dones = replay_buffer.sample(args.batch_size)
-        loss = dqn.learn(obses_t, actions, rewards, obses_tp1, dones)
+        if args.agent == 'BootstrappedDQN':
+            loss = dqn.learn(obses_t, actions, rewards, obses_tp1, dones, k)
+        else:
+            loss = dqn.learn(obses_t, actions, rewards, obses_tp1, dones)
         log.add_scalar('loss', loss, timestamp)
 
     # if episode % 10 == 0:
@@ -155,8 +158,11 @@ for episode in range(args.max_episodes):
     #         visited.append(transition.state.sum())
     #     print(Counter(visited))
 
+    if args.agent == 'BootstrappedDQN':
+        avg_reward = test(args, env, dqn, episode, k)  # Test
+    else:
+        avg_reward = test(args, env, dqn)  # Test
 
-    avg_reward = test(args, env, dqn, episode)  # Test
     graph_rewards.append(avg_reward)
 
     if episode > 4:

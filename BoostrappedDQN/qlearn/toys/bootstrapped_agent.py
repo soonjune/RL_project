@@ -99,7 +99,7 @@ class BootstrappedAgent():
     def update_target_net(self):
         self.target_net.load_state_dict(self.online_net.state_dict())
 
-    def learn(self, states, actions, rewards, next_states, terminals):
+    def learn(self, states, actions, rewards, next_states, terminals, k):
         self.online_net.train()
         self.target_net.eval()
         states = Variable(self.FloatTensor(states))
@@ -112,30 +112,29 @@ class BootstrappedAgent():
         # pdb.set_trace()
         # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
         # columns of actions taken
-        online_outputs = self.online_net(states)
-        target_outputs = self.target_net(next_states)
+        online_outputs = self.online_net.heads[k](states)
+        target_outputs = self.target_net.heads[k](next_states)
         loss = 0
         # import pdb
         # pdb.set_trace()
-        for k in range(self.nheads):
-            state_action_values = online_outputs[k].gather(1, actions.view(-1, 1))
+        state_action_values = online_outputs.gather(1, actions.view(-1, 1))
 
-            # Compute V(s_{t+1}) for all next states.
-            if self.double_q:
-                next_actions = online_outputs[k].max(1)[1]
-                next_state_values = target_outputs[k].gather(1, next_actions.view(-1, 1))
-            else:
-                next_state_values = target_outputs[k].max(1)[0].view(-1, 1)
+        # Compute V(s_{t+1}) for all next states.
+        if self.double_q:
+            next_actions = online_outputs.max(1)[1]
+            next_state_values = target_outputs.gather(1, next_actions.view(-1, 1))
+        else:
+            next_state_values = target_outputs.max(1)[0].view(-1, 1)
 
-            target_state_action_values = rewards + (1 - terminals) * self.discount * next_state_values.view(-1, 1)
+        target_state_action_values = rewards + (1 - terminals) * self.discount * next_state_values.view(-1, 1)
 
-            # Compute Huber loss
-            loss += F.smooth_l1_loss(state_action_values, target_state_action_values.detach())
+        # Compute Huber loss
+        loss += F.smooth_l1_loss(state_action_values, target_state_action_values.detach())
         # loss /= args.nheads
         # Optimize the model
         self.optimiser.zero_grad()
         loss.backward()
-        for param in self.online_net.parameters():
+        for param in self.online_net.heads[k].parameters():
             param.grad.data.clamp_(-1, 1)
         self.optimiser.step()
         return loss

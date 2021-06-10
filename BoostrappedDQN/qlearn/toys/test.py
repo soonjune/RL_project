@@ -13,7 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Test DQN
-def test(args, env, dqn, cnt):
+def test(args, env, dqn, cnt=0, k=0):
     rewards = []
 
     # Test performance over several episodes
@@ -54,13 +54,17 @@ def test(args, env, dqn, cnt):
     # print(left_mean)
     # print(right_mean)
 
-    if args.agent == "BootstrappedDQN" and (cnt < 40 or cnt % 100 == 0):
+    if args.agent == "BootstrappedDQN" and (cnt < 42 or cnt % 100 == 0):
         # print(type(left_mean[0]))
         plt.plot([i for i in range(1,109)],left_mean, 'bo', markersize=2, label='left')
         plt.plot([i for i in range(1,109)], right_mean, 'ro', markersize=2, label='right')
         plt.ylabel('mean q_val')
         plt.xlabel('steps')
         plt.legend()
+        if args.ucb:
+            plt.title(f"Episode {cnt}: UCB (mean+std)")
+        else:
+            plt.title(f"Episode {cnt}: After training {k}th head")
         plt.savefig(f'./graphs/mean/mean_{cnt}')
         plt.close('all')
 
@@ -69,6 +73,10 @@ def test(args, env, dqn, cnt):
         plt.ylabel('q_val std')
         plt.xlabel('steps')
         plt.legend()
+        if args.ucb:
+            plt.title(f"Episode {cnt}: UCB (mean+std)")
+        else:
+            plt.title(f"Episode {cnt}: After training {k}th head")
         plt.savefig(f'./graphs/std/std_{cnt}')
         plt.close('all')
 
