@@ -47,6 +47,8 @@ class BootstrappedAgent():
         self.right_vals = []
         self.ucb = args.ucb
         self.state_qvals = dict()
+        for i in range(args.input_dim):
+            self.state_qvals[i] = [[0], [0]]
 
     # Acts based on single state (no batch)
     def act_single_head(self, state, k):
@@ -67,7 +69,7 @@ class BootstrappedAgent():
         self.state_qvals[current] = [self.left_vals, self.right_vals]
 
         if self.ucb:
-            left_UCB = np.mean(self.left_vals[-1]) + np.std(self.right_vals[-1])
+            left_UCB = np.mean(self.left_vals[-1]) + np.std(self.left_vals[-1])
             right_UCB = np.mean(self.right_vals[-1]) + np.std(self.right_vals[-1])
             # print(left_UCB, right_UCB)
             if left_UCB > right_UCB:

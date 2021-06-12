@@ -56,29 +56,61 @@ def test(args, env, dqn, cnt=0, k=0):
 
     if args.agent == "BootstrappedDQN" and (cnt < 42 or cnt % 100 == 0):
         # print(type(left_mean[0]))
-        plt.plot([i for i in range(1,args.input_dim+9)],left_mean, 'bo', markersize=2, label='left')
-        plt.plot([i for i in range(1,args.input_dim+9)], right_mean, 'ro', markersize=2, label='right')
-        plt.ylabel('mean q_val')
-        plt.xlabel('steps')
-        plt.legend()
-        if args.ucb:
-            plt.title(f"Episode {cnt}: UCB (mean+std)")
-        else:
-            plt.title(f"Episode {cnt}: After training {k}th head")
-        plt.savefig(f'./graphs/mean/mean_{cnt}')
-        plt.close('all')
+        if args.plot_states:
+            lmean, lstd, rmean, rstd = [], [], [], []
+            for i in range(20):
+                lmean.append(np.mean(dqn.state_qvals[i][0]))
+                rmean.append(np.mean(dqn.state_qvals[i][1]))
+                lstd.append(np.std(dqn.state_qvals[i][0]))
+                rstd.append(np.std(dqn.state_qvals[i][1]))
+            plt.plot([i for i in range(args.input_dim)], lmean, 'bo', markersize=2, label='left')
+            plt.plot([i for i in range(args.input_dim)], rmean, 'ro', markersize=2, label='right')
+            plt.ylabel('mean q_val')
+            plt.xlabel('states')
+            plt.legend()
+            if args.ucb:
+                plt.title(f"Episode {cnt}: UCB Q value means")
+            else:
+                plt.title(f"Episode {cnt}: Means after training {k}th head")
+            plt.savefig(f'./graphs/state_mean/mean_{cnt}')
+            plt.close('all')
 
-        plt.plot([i for i in range(1,args.input_dim+9)], left_std, 'bo', markersize=2, label='left')
-        plt.plot([i for i in range(1,args.input_dim+9)], right_std, 'ro', markersize=2, label='right')
-        plt.ylabel('q_val std')
-        plt.xlabel('steps')
-        plt.legend()
-        if args.ucb:
-            plt.title(f"Episode {cnt}: UCB (mean+std)")
+            plt.plot([i for i in range(args.input_dim)], lstd, 'bo', markersize=2, label='left')
+            plt.plot([i for i in range(args.input_dim)], rstd, 'ro', markersize=2, label='right')
+            plt.ylabel('q_val std')
+            plt.xlabel('states')
+            plt.legend()
+            if args.ucb:
+                plt.title(f"Episode {cnt}: UCB Q value stds")
+            else:
+                plt.title(f"Episode {cnt}: Means after training {k}th head")
+            plt.savefig(f'./graphs/state_std/std_{cnt}')
+            plt.close('all')
+            
         else:
-            plt.title(f"Episode {cnt}: After training {k}th head")
-        plt.savefig(f'./graphs/std/std_{cnt}')
-        plt.close('all')
+            plt.plot([i for i in range(1,args.input_dim+9)],left_mean, 'bo', markersize=2, label='left')
+            plt.plot([i for i in range(1,args.input_dim+9)], right_mean, 'ro', markersize=2, label='right')
+            plt.ylabel('mean q_val')
+            plt.xlabel('steps')
+            plt.legend()
+            if args.ucb:
+                plt.title(f"Episode {cnt}: UCB (mean+std)")
+            else:
+                plt.title(f"Episode {cnt}: After training {k}th head")
+            plt.savefig(f'./graphs/mean/mean_{cnt}')
+            plt.close('all')
+
+            plt.plot([i for i in range(1,args.input_dim+9)], left_std, 'bo', markersize=2, label='left')
+            plt.plot([i for i in range(1,args.input_dim+9)], right_std, 'ro', markersize=2, label='right')
+            plt.ylabel('q_val std')
+            plt.xlabel('steps')
+            plt.legend()
+            if args.ucb:
+                plt.title(f"Episode {cnt}: UCB (mean+std)")
+            else:
+                plt.title(f"Episode {cnt}: After training {k}th head")
+            plt.savefig(f'./graphs/std/std_{cnt}')
+            plt.close('all')
 
     env.close()
 
