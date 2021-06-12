@@ -165,7 +165,7 @@ for episode in range(args.max_episodes):
 
     graph_rewards.append(avg_reward)
 
-    if episode > 4:
+    if episode > 0:
         print('episode: ' + str(episode) + ', Avg. reward: ' + str(round(avg_reward, 4)))
 
 plt.plot(graph_rewards, 'bo')
