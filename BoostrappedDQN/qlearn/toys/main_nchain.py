@@ -58,6 +58,7 @@ parser.add_argument('--n-flows-r', type=int, default=int(1), help='number of nor
 parser.add_argument('--logdir', type=str, default='logs', help='log directory')
 parser.add_argument('--double-q', type=int, default=1, help='whether or not to use Double DQN')
 parser.add_argument('--ucb', type=int, default=0, help='whether or not to use UCB')
+parser.add_argument('--plot_states', type=int, default=0, help='whether or not to plot state values')
 
 
 # Setup
