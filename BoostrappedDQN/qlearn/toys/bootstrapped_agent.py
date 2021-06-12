@@ -66,7 +66,7 @@ class BootstrappedAgent():
         self.left_vals.append(list(map(lambda x: x.data[0][0].numpy(), outputs)))
         self.right_vals.append(list(map(lambda x: x.data[0][1].numpy(), outputs)))
 
-        self.state_qvals[current] = [self.left_vals, self.right_vals]
+        self.state_qvals[current] = [self.left_vals[-1], self.right_vals[-1]]
 
         if self.ucb:
             left_UCB = np.mean(self.left_vals[-1]) + np.std(self.left_vals[-1])
@@ -132,7 +132,6 @@ class BootstrappedAgent():
             next_state_values = target_outputs.max(1)[0].view(-1, 1)
 
         target_state_action_values = rewards + (1 - terminals) * self.discount * next_state_values.view(-1, 1)
-
         # Compute Huber loss
         loss += F.smooth_l1_loss(state_action_values, target_state_action_values.detach())
         # loss /= args.nheads
