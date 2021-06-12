@@ -14,3 +14,6 @@ environment: n-chain
    - nchain with 100 states (starting from 1, s2)
    - score 10 reached at episode 5 and forgets but soon returns (slower)
    - DQN first reaches 10 at episode 200 forgets at 900
+4. Count-based Exploration
+   - pseudo-count based on non-tabular settings
+
