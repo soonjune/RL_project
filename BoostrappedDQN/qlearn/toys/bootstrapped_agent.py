@@ -140,5 +140,10 @@ class BootstrappedAgent():
         loss.backward()
         for param in self.online_net.heads[k].parameters():
             param.grad.data.clamp_(-1, 1)
+
+        # print parameters
+        # for name, param in self.online_net.heads[k].named_parameters():
+        #     if param.requires_grad:
+        #         print(name, param.data)
         self.optimiser.step()
         return loss

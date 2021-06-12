@@ -2,6 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/BoostrappedDQN/baselines" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/BoostrappedDQN/baselines_before" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/RL_project" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/baselines" vcs="Git" />
   </component>

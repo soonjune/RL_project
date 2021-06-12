@@ -11,6 +11,7 @@ import torch
 from torch.autograd import Variable
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import MinMaxScaler
 
 # Test DQN
 def test(args, env, dqn, cnt=0, k=0):
@@ -45,6 +46,11 @@ def test(args, env, dqn, cnt=0, k=0):
 
     left_mean, left_std = [], []
     right_mean, right_std = [], []
+    lscaler = MinMaxScaler()
+    rscaler = MinMaxScaler()
+    dqn.left_vals = lscaler.fit_transform(dqn.left_vals)
+    dqn.right_vals = rscaler.fit_transform(dqn.right_vals)
+
     for left_pred, right_pred in zip(dqn.left_vals, dqn.right_vals):
         left_mean.append(np.mean(left_pred))
         left_std.append(np.std(left_pred))
@@ -74,6 +80,7 @@ def test(args, env, dqn, cnt=0, k=0):
                 plt.title(f"Episode {cnt}: Means after training {k}th head")
             plt.savefig(f'./graphs/state_mean/mean_{cnt}')
             plt.close('all')
+
 
             plt.plot([i for i in range(args.input_dim)], lstd, 'bo', markersize=2, label='left')
             plt.plot([i for i in range(args.input_dim)], rstd, 'ro', markersize=2, label='right')
