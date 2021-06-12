@@ -46,6 +46,7 @@ class BootstrappedAgent():
         self.left_vals = []
         self.right_vals = []
         self.ucb = args.ucb
+        self.state_qvals = dict()
 
     # Acts based on single state (no batch)
     def act_single_head(self, state, k):
@@ -57,11 +58,13 @@ class BootstrappedAgent():
         self.online_net.eval()
         state = Variable(self.FloatTensor(state / 255.0))
         outputs = self.online_net.forward(state)
-
+        current = int(sum([i > 0 for i in state.data[0]]) - 1)
+        
         # for evaluating uncertainty
         self.left_vals.append(list(map(lambda x: x.data[0][0].numpy(), outputs)))
         self.right_vals.append(list(map(lambda x: x.data[0][1].numpy(), outputs)))
 
+        self.state_qvals[current] = [self.left_vals, self.right_vals]
 
         if self.ucb:
             left_UCB = np.mean(self.left_vals[-1]) + np.std(self.left_vals[-1])
