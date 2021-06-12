@@ -67,7 +67,7 @@ class BootstrappedAgent():
         self.state_qvals[current] = [self.left_vals, self.right_vals]
 
         if self.ucb:
-            left_UCB = np.mean(self.left_vals[-1]) + np.std(self.right_vals[-1])
+            left_UCB = np.mean(self.left_vals[-1]) + np.std(self.left_vals[-1])
             right_UCB = np.mean(self.right_vals[-1]) + np.std(self.right_vals[-1])
             # print(left_UCB, right_UCB)
             if left_UCB > right_UCB:
@@ -139,5 +139,10 @@ class BootstrappedAgent():
         loss.backward()
         for param in self.online_net.heads[k].parameters():
             param.grad.data.clamp_(-1, 1)
+
+        # print parameters
+        # for name, param in self.online_net.heads[k].named_parameters():
+        #     if param.requires_grad:
+        #         print(name, param.data)
         self.optimiser.step()
         return loss
