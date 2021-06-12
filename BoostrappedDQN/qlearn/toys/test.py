@@ -56,8 +56,10 @@ def test(args, env, dqn, cnt=0, k=0):
 
     if args.agent == "BootstrappedDQN" and (cnt < 42 or cnt % 100 == 0):
         # print(type(left_mean[0]))
-        plt.plot([i for i in range(1,109)],left_mean, 'bo', markersize=2, label='left')
-        plt.plot([i for i in range(1,109)], right_mean, 'ro', markersize=2, label='right')
+        # plt.plot([i for i in range(1,109)],left_mean, 'bo', markersize=2, label='left')
+        # plt.plot([i for i in range(1,109)], right_mean, 'ro', markersize=2, label='right')
+        plt.plot([i for i in range(1,args.input_dim+9)],left_mean, 'bo', markersize=2, label='left')
+        plt.plot([i for i in range(1,args.input_dim+9)], right_mean, 'ro', markersize=2, label='right')
         plt.ylabel('mean q_val')
         plt.xlabel('steps')
         plt.legend()
@@ -68,8 +70,10 @@ def test(args, env, dqn, cnt=0, k=0):
         plt.savefig(f'./graphs/mean/mean_{cnt}')
         plt.close('all')
 
-        plt.plot([i for i in range(1,109)], left_std, 'bo', markersize=2, label='left')
-        plt.plot([i for i in range(1,109)], right_std, 'ro', markersize=2, label='right')
+        # plt.plot([i for i in range(1,109)], left_std, 'bo', markersize=2, label='left')
+        # plt.plot([i for i in range(1,109)], right_std, 'ro', markersize=2, label='right')
+        plt.plot([i for i in range(1,args.input_dim+9)], left_std, 'bo', markersize=2, label='left')
+        plt.plot([i for i in range(1,args.input_dim+9)], right_std, 'ro', markersize=2, label='right')
         plt.ylabel('q_val std')
         plt.xlabel('steps')
         plt.legend()
