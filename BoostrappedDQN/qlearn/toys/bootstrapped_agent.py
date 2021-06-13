@@ -69,7 +69,7 @@ class BootstrappedAgent():
         self.state_qvals[current] = [self.left_vals[-1], self.right_vals[-1]]
 
         if self.ucb:
-            rate = 10
+            rate = 1
             left_UCB = np.mean(self.left_vals[-1]) + rate * np.std(self.left_vals[-1])
             right_UCB = np.mean(self.right_vals[-1]) + rate * np.std(self.right_vals[-1])
             # print(left_UCB, right_UCB)
