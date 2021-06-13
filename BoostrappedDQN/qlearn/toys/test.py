@@ -60,7 +60,7 @@ def test(args, env, dqn, cnt=0, k=0):
     # print(left_mean)
     # print(right_mean)
 
-    if args.agent == "BootstrappedDQN" and (cnt < 42 or cnt % 100 == 0) or ((left_std[0] < right_std[0]) and cnt < 200)
+    if args.agent == "BootstrappedDQN" and (cnt < 42 or cnt % 100 == 0) or ((left_std[0] < right_std[0]) and cnt < 200):
         plt.plot([i for i in range(1,args.input_dim+9)],left_mean, 'bo', markersize=2, label='left')
         plt.plot([i for i in range(1,args.input_dim+9)], right_mean, 'ro', markersize=2, label='right')
         plt.ylabel('mean q_val')
