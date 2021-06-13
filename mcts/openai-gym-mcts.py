@@ -99,6 +99,7 @@ class Runner:
                     action = state.action_space.sample()
                     _, reward, terminal, _ = state.step(action)
                     sum_reward += reward
+                    print(reward)
                     actions.append(action)
 
                     if len(actions) > self.max_depth:
