@@ -29,7 +29,7 @@ class NChainEnv(gym.Env):
     def step(self, action):
         assert self.action_space.contains(action)
         v = np.arange(self.n)
-        reward = lambda s, a: 1. if (s == (self.n - 1) and a == 1) else (0.01 if (s == 0 and a == 0) else 0)
+        reward = lambda s, a: 1 if (s == (self.n - 1) and a == 1) else (0.001 if (s == 0 and a == 0) else 0)
         is_done = lambda nsteps: nsteps >= self.max_nsteps
 
         r = reward(self.state, action)

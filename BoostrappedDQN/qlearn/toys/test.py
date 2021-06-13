@@ -81,7 +81,6 @@ def test(args, env, dqn, cnt=0, k=0):
             plt.savefig(f'./graphs/state_mean/mean_{cnt}')
             plt.close('all')
 
-
             plt.plot([i for i in range(args.input_dim)], lstd, 'bo', markersize=2, label='left')
             plt.plot([i for i in range(args.input_dim)], rstd, 'ro', markersize=2, label='right')
             plt.ylabel('q_val std')
