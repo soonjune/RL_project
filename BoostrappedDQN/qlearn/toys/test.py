@@ -94,7 +94,7 @@ def test(args, env, dqn, cnt=0, k=0):
             plt.close('all')
 
             if args.ucb:
-                rate = 0.1
+                rate = args.hyperparameter
                 plt.plot([i for i in range(args.input_dim)], [x+rate*y for x, y in zip(lmean, lstd)], 'bo', markersize=2, label='left')
                 plt.plot([i for i in range(args.input_dim)], [x+rate*y for x, y in zip(rmean, rstd)], 'ro', markersize=2, label='right')
                 plt.ylabel('UCB q_val')

@@ -24,6 +24,7 @@ class BootstrappedAgent():
         self.discount = args.discount
         self.nheads = args.nheads
         self.double_q = args.double_q
+        self.rate = args.hyperparameter
 
         self.online_net = BoostrappedDQN(args, self.action_space)
         if args.model and os.path.isfile(args.model):
@@ -69,9 +70,8 @@ class BootstrappedAgent():
         self.state_qvals[current] = [self.left_vals[-1], self.right_vals[-1]]
 
         if self.ucb:
-            rate = 1
-            left_UCB = np.mean(self.left_vals[-1]) + rate * np.std(self.left_vals[-1])
-            right_UCB = np.mean(self.right_vals[-1]) + rate * np.std(self.right_vals[-1])
+            left_UCB = np.mean(self.left_vals[-1]) + self.rate * np.std(self.left_vals[-1])
+            right_UCB = np.mean(self.right_vals[-1]) + self.rate * np.std(self.right_vals[-1])
             # print(left_UCB, right_UCB)
             if left_UCB > right_UCB:
                 return 0
