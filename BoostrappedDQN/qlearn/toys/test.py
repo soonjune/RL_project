@@ -46,10 +46,10 @@ def test(args, env, dqn, cnt=0, k=0):
 
     left_mean, left_std = [], []
     right_mean, right_std = [], []
-    lscaler = MinMaxScaler()
-    rscaler = MinMaxScaler()
-    dqn.left_vals = lscaler.fit_transform(dqn.left_vals)
-    dqn.right_vals = rscaler.fit_transform(dqn.right_vals)
+    # lscaler = MinMaxScaler()
+    # rscaler = MinMaxScaler()
+    # dqn.left_vals = lscaler.fit_transform(dqn.left_vals)
+    # dqn.right_vals = rscaler.fit_transform(dqn.right_vals)
 
     for left_pred, right_pred in zip(dqn.left_vals, dqn.right_vals):
         left_mean.append(np.mean(left_pred))
@@ -95,8 +95,9 @@ def test(args, env, dqn, cnt=0, k=0):
             plt.close('all')
 
             if args.ucb:
-                plt.plot([i for i in range(args.input_dim)], [x+10*y for x, y in zip(lmean, lstd)], 'bo', markersize=2, label='left')
-                plt.plot([i for i in range(args.input_dim)], [x+10*y for x, y in zip(rmean, rstd)], 'ro', markersize=2, label='right')
+                rate = 0.1
+                plt.plot([i for i in range(args.input_dim)], [x+rate*y for x, y in zip(lmean, lstd)], 'bo', markersize=2, label='left')
+                plt.plot([i for i in range(args.input_dim)], [x+rate*y for x, y in zip(rmean, rstd)], 'ro', markersize=2, label='right')
                 plt.ylabel('UCB q_val')
                 plt.xlabel('states')
                 plt.legend()

@@ -112,6 +112,7 @@ graph_rewards = []
 # Training loop
 dqn.online_net.train()
 timestamp = 0
+cnt = 0
 for episode in range(args.max_episodes):
 
     epsilon = exploration.value(episode)
@@ -168,8 +169,15 @@ for episode in range(args.max_episodes):
 
     if episode > 0:
         print('episode: ' + str(episode) + ', Avg. reward: ' + str(round(avg_reward, 4)))
-
-plt.plot(graph_rewards, 'bo')
+        if round(avg_reward, 4) == 10:
+            cnt += 1
+        else:
+            cnt = 0
+    
+    # if cnt > 50:
+    #     print("terminated with stable reward of 10")
+    #     break
+plt.plot(graph_rewards, 'b-')
 plt.ylabel('avg. rewards')
 plt.xlabel('episodes')
 plt.savefig(f'avg_{args.agent}')
