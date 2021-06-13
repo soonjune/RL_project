@@ -58,14 +58,19 @@ class BootstrappedAgent():
         state = Variable(self.FloatTensor(state / 255.0))
         outputs = self.online_net.forward(state)
 
+        if len(self.left_vals) > 1000:
+            self.left_vals = []
+            self.right_vals = []
+
         # for evaluating uncertainty
         self.left_vals.append(list(map(lambda x: x.data[0][0].numpy(), outputs)))
         self.right_vals.append(list(map(lambda x: x.data[0][1].numpy(), outputs)))
 
 
         if self.ucb:
-            left_UCB = np.mean(self.left_vals[-1]) + np.std(self.left_vals[-1])
-            right_UCB = np.mean(self.right_vals[-1]) + np.std(self.right_vals[-1])
+            rate = 0.01
+            left_UCB = np.mean(self.left_vals[-1]) + rate * np.std(self.left_vals[-1])
+            right_UCB = np.mean(self.right_vals[-1]) + rate * np.std(self.right_vals[-1])
             # print(left_UCB, right_UCB)
             if left_UCB > right_UCB:
                 return 0

@@ -46,10 +46,11 @@ def test(args, env, dqn, cnt=0, k=0):
 
     left_mean, left_std = [], []
     right_mean, right_std = [], []
-    lscaler = MinMaxScaler()
-    rscaler = MinMaxScaler()
-    dqn.left_vals = lscaler.fit_transform(dqn.left_vals)
-    dqn.right_vals = rscaler.fit_transform(dqn.right_vals)
+    # for scaling
+    # lscaler = MinMaxScaler()
+    # rscaler = MinMaxScaler()
+    # dqn.left_vals = lscaler.fit_transform(dqn.left_vals)
+    # dqn.right_vals = rscaler.fit_transform(dqn.right_vals)
 
     for left_pred, right_pred in zip(dqn.left_vals, dqn.right_vals):
         left_mean.append(np.mean(left_pred))

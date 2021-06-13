@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="5f2b9379-05c6-43cf-9058-77c6371784d0" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/BoostrappedDQN/baselines_before/logger.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BoostrappedDQN/baselines_before/baselines/ddpg/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/BoostrappedDQN/baselines_before/baselines/ddpg/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BoostrappedDQN/baselines_before/baselines/ddpg/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/BoostrappedDQN/baselines_before/baselines/ddpg/__init__.py" afterDir="false" />
@@ -71,7 +70,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/BoostrappedDQN/qlearn/toys/main_nchain.py" />
-      <option name="PARAMETERS" value="--agent BootstrappedDQN --cuda 0 --input-dim 100 --double-q 0 --ucb 0 --seed 0  --learning-starts 32 --max-episodes 50000" />
+      <option name="PARAMETERS" value="--agent BootstrappedDQN --cuda 0 --input-dim 100 --double-q 0 --ucb 1 --seed 0  --learning-starts 32 --max-episodes 50000" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -100,7 +99,8 @@
       <workItem from="1623191169196" duration="3388000" />
       <workItem from="1623201095400" duration="21889000" />
       <workItem from="1623302462419" duration="23612000" />
-      <workItem from="1623470238388" duration="8591000" />
+      <workItem from="1623470238388" duration="9112000" />
+      <workItem from="1623556313387" duration="6587000" />
     </task>
     <servers />
   </component>
@@ -112,7 +112,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/BoostrappedDQN/qlearn/toys/bootstrapped_agent.py</url>
-          <line>119</line>
+          <line>124</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -132,18 +132,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/BoostrappedDQN/qlearn/toys/bootstrapped_agent.py</url>
-          <line>126</line>
+          <line>131</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/BoostrappedDQN/qlearn/toys/bootstrapped_agent.py</url>
-          <line>131</line>
+          <line>136</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/RL_project$main_nchain.coverage" NAME="main_nchain Coverage Results" MODIFIED="1623480076436" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/BoostrappedDQN/qlearn/toys" />
+    <SUITE FILE_PATH="coverage/RL_project$main_nchain.coverage" NAME="main_nchain Coverage Results" MODIFIED="1623567422547" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/BoostrappedDQN/qlearn/toys" />
   </component>
 </project>

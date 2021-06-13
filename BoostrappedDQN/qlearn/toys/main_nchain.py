@@ -97,7 +97,9 @@ elif args.agent == 'MNFDQN':
 else:
     dqn = Agent(args, env)
 
-replay_buffer = ReplayBuffer(args.replay_buffer_size)
+replay_buffer = []
+for i in range(args.nheads):
+    replay_buffer.append(ReplayBuffer(args.replay_buffer_size//args.nheads))
 # mem = ReplayBuffer(args.memory_capacity)
 
 # schedule of epsilon annealing
@@ -136,7 +138,7 @@ for episode in range(args.max_episodes):
 
         next_state, reward, done, _ = env.step(int(action))
         # Store the transition in memory
-        replay_buffer.add(state, action, reward, next_state, float(done))
+        replay_buffer[k].add(state, action, reward, next_state, float(done))
 
         # Move to the next state
         state = next_state
@@ -145,7 +147,7 @@ for episode in range(args.max_episodes):
             dqn.update_target_net()
 
     if timestamp > args.learning_starts:
-        obses_t, actions, rewards, obses_tp1, dones = replay_buffer.sample(args.batch_size)
+        obses_t, actions, rewards, obses_tp1, dones = replay_buffer[k].sample(args.batch_size)
         if args.agent == 'BootstrappedDQN':
             loss = dqn.learn(obses_t, actions, rewards, obses_tp1, dones, k)
         else:
