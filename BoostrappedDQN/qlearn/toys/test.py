@@ -35,9 +35,13 @@ def test(args, env, dqn, cnt=0, k=0):
             elif args.agent == 'DQN':
                 action = dqn.act(state[None])
             elif args.agent == 'BootstrappedDQN':
-                action = dqn.act(state[None]) 
+                action = dqn.act(state[None])
                    # Choose an action greedily
-            state, reward, done, _ = env.step(int(action))  # Step
+            prev_state = state
+            state, reward, done, _ = env.step(int(action))
+            if args.use_tdu:
+                dqn.act_tdu(prev_state, state)# Step
+
             reward_sum += reward
 
             if done:
@@ -60,8 +64,12 @@ def test(args, env, dqn, cnt=0, k=0):
 
     # print(left_mean)
     # print(right_mean)
+    lmean, rmean = [], []
+    for i in range(args.input_dim):
+        lmean.append(np.mean(dqn.tdu[i][0]))
+        rmean.append(np.mean(dqn.tdu[i][1]))
 
-    if args.agent == "BootstrappedDQN" and (cnt < 42 or cnt % 100 == 0) or ((left_std[0] < right_std[0]) and cnt < 200):
+    if args.agent == "BootstrappedDQN" and (cnt < 190 or cnt % 100 == 0) or ((left_std[0] < right_std[0]) and cnt < 200):
         plt.plot([i for i in range(1,args.input_dim+9)],left_mean, 'bo', markersize=2, label='left')
         plt.plot([i for i in range(1,args.input_dim+9)], right_mean, 'ro', markersize=2, label='right')
         plt.ylabel('mean q_val')
@@ -84,6 +92,18 @@ def test(args, env, dqn, cnt=0, k=0):
         else:
             plt.title(f"Episode {cnt}: After training {k}th head")
         plt.savefig(f'./graphs/std/std_{cnt}')
+        plt.close('all')
+
+        plt.plot([i for i in range(args.input_dim)], lmean, 'bo', markersize=2, label='left')
+        plt.plot([i for i in range(args.input_dim)], rmean, 'ro', markersize=2, label='right')
+        plt.ylabel('td uncertainty')
+        plt.xlabel('state')
+        plt.legend()
+        if args.ucb:
+            plt.title(f"Episode {cnt}")
+        else:
+            plt.title(f"Episode {cnt}: After training {k}th head")
+        plt.savefig(f'./graphs/tdu/tdu_{cnt}')
         plt.close('all')
 
     env.close()

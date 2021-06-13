@@ -46,6 +46,10 @@ class BootstrappedAgent():
         self.left_vals = []
         self.right_vals = []
         self.ucb = args.ucb
+        self.use_tdu = args.use_tdu
+        self.tdu = dict()
+        for i in range(args.input_dim):
+            self.tdu[i] = [[],[]]
 
     # Acts based on single state (no batch)
     def act_single_head(self, state, k):
@@ -68,7 +72,7 @@ class BootstrappedAgent():
 
 
         if self.ucb:
-            rate = 0.01
+            rate = 0.1
             left_UCB = np.mean(self.left_vals[-1]) + rate * np.std(self.left_vals[-1])
             right_UCB = np.mean(self.right_vals[-1]) + rate * np.std(self.right_vals[-1])
             # print(left_UCB, right_UCB)
@@ -76,7 +80,6 @@ class BootstrappedAgent():
                 return 0
             else:
                 return 1
-
 
         # logging
         # left_vals = list(map(lambda x: float(x.data[0][0].numpy()), outputs))
@@ -96,6 +99,37 @@ class BootstrappedAgent():
                 actions.append(int(outputs[k].data.max(1)[1][0]))
             action, _ = Counter(actions).most_common()[0]
             return action
+
+    def act_tdu(self, state, next_state, reward):
+        self.online_net.eval()
+        state = Variable(self.FloatTensor(state / 255.0))
+        next_state = Variable(self.FloatTensor(next_state / 255.0))
+
+        cur_out = self.online_net.forward(state)
+        next_out = self.online_net.forward(next_state)
+        for i in range(args.nheads):
+            state_action_values = state_values[i][actions]
+            next_state_values = s_primes[i].max(0)[0]
+            target_state_action_values = rewards + (1 - terminals) * args.discount * next_state_values.view(-1, 1)
+            td_errors.append((target_state_action_values.detach() - state_action_values).item())
+        tdu = np.std(td_errors)
+        # logging
+        # left_vals = list(map(lambda x: float(x.data[0][0].numpy()), outputs))
+        # np.set_printoptions(precision=2)
+        # # print("left q vals: ", np.array(left_vals))
+        # # print("left mean/std", np.mean(left_vals), np.std(left_vals))
+        # right_vals = list(map(lambda x: float(x.data[0][1].numpy()), outputs))
+        # if np.mean(right_vals) < 1:
+        #     print("right q vals: ", np.array(right_vals))
+        #     print("right mean/std", np.mean(right_vals), np.std(right_vals))
+        #     print("\n")
+
+
+        actions = []
+        for k in range(self.online_net.nheads):
+            actions.append(int(outputs[k].data.max(1)[1][0]))
+        action, _ = Counter(actions).most_common()[0]
+        return action
 
     # Acts with an epsilon-greedy policy
     def act_e_greedy(self, state, k, epsilon=0.01):
@@ -135,6 +169,7 @@ class BootstrappedAgent():
 
         # Compute Huber loss
         loss += F.smooth_l1_loss(state_action_values, target_state_action_values.detach())
+        # print(loss)
         # loss /= args.nheads
         # Optimize the model
         self.optimiser.zero_grad()
