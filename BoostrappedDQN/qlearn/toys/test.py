@@ -40,7 +40,7 @@ def test(args, env, dqn, cnt=0, k=0):
             prev_state = state
             state, reward, done, _ = env.step(int(action))
             if args.use_tdu:
-                dqn.act_tdu(prev_state, state)# Step
+                dqn.act_tdu(prev_state, state, reward, done, int(action))# Step
 
             reward_sum += reward
 
@@ -69,7 +69,7 @@ def test(args, env, dqn, cnt=0, k=0):
         lmean.append(np.mean(dqn.tdu[i][0]))
         rmean.append(np.mean(dqn.tdu[i][1]))
 
-    if args.agent == "BootstrappedDQN" and (cnt < 190 or cnt % 100 == 0) or ((left_std[0] < right_std[0]) and cnt < 200):
+    if args.agent == "BootstrappedDQN" and (cnt < 300 or cnt % 100 == 0) or ((left_std[0] < right_std[0]) and cnt < 200):
         plt.plot([i for i in range(1,args.input_dim+9)],left_mean, 'bo', markersize=2, label='left')
         plt.plot([i for i in range(1,args.input_dim+9)], right_mean, 'ro', markersize=2, label='right')
         plt.ylabel('mean q_val')

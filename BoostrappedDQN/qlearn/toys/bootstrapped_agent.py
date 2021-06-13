@@ -100,19 +100,22 @@ class BootstrappedAgent():
             action, _ = Counter(actions).most_common()[0]
             return action
 
-    def act_tdu(self, state, next_state, reward):
+    def act_tdu(self, state, next_state, reward, terminals, actions):
         self.online_net.eval()
         state = Variable(self.FloatTensor(state / 255.0))
         next_state = Variable(self.FloatTensor(next_state / 255.0))
 
         cur_out = self.online_net.forward(state)
         next_out = self.online_net.forward(next_state)
-        for i in range(args.nheads):
-            state_action_values = state_values[i][actions]
-            next_state_values = s_primes[i].max(0)[0]
-            target_state_action_values = rewards + (1 - terminals) * args.discount * next_state_values.view(-1, 1)
+        td_errors = []
+        for i in range(10):
+            state_action_values = cur_out[i][actions]
+            next_state_values = next_out[i].max(0)[0]
+            target_state_action_values = reward + (1 - terminals) * 0.999 * next_state_values.view(-1, 1)
             td_errors.append((target_state_action_values.detach() - state_action_values).item())
         tdu = np.std(td_errors)
+        s = int(sum([i > 0 for i in state.data])-1)
+        self.tdu[s][actions].append(tdu)
         # logging
         # left_vals = list(map(lambda x: float(x.data[0][0].numpy()), outputs))
         # np.set_printoptions(precision=2)
@@ -125,11 +128,11 @@ class BootstrappedAgent():
         #     print("\n")
 
 
-        actions = []
-        for k in range(self.online_net.nheads):
-            actions.append(int(outputs[k].data.max(1)[1][0]))
-        action, _ = Counter(actions).most_common()[0]
-        return action
+        # actions = []
+        # for k in range(self.online_net.nheads):
+        #     actions.append(int(outputs[k].data.max(1)[1][0]))
+        # action, _ = Counter(actions).most_common()[0]
+        # return action
 
     # Acts with an epsilon-greedy policy
     def act_e_greedy(self, state, k, epsilon=0.01):

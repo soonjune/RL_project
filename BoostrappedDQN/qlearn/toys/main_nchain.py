@@ -182,7 +182,7 @@ for episode in range(args.max_episodes):
     #         visited.append(transition.state.sum())
     #     print(Counter(visited))
 
-    avg_reward = test(args, env, dqn, episode)  # Test
+    avg_reward = test(args, env, dqn, episode, k)  # Test
     # if avg_reward == 10.0:
     #     ten_count += 1
     #     if ten_count > 50:
